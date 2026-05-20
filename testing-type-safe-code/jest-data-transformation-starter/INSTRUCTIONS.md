@@ -1,0 +1,1 @@
+Write comprehensive Jest tests for a data transformation service. The service transforms raw API data into formatted display data. Your task: write tests that cover the transformUserData function, including edge cases and error handling.
