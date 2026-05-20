@@ -1,0 +1,13 @@
+{
+  "name": "deep-partial-form",
+  "version": "1.0.0",
+  "description": "Demo: DeepPartial, FormFields, and FormState type transformations",
+  "type": "module",
+  "scripts": {
+    "test": "node --experimental-strip-types --test __tests__/*.test.ts"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.7.0"
+  }
+}

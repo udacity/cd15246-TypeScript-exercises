@@ -1,0 +1,19 @@
+{
+  "name": "demo-express-server-setup",
+  "version": "1.0.0",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "build": "tsc",
+    "type-check": "tsc --noEmit",
+    "test": "node --experimental-strip-types --test __tests__/*.test.ts"
+  },
+  "dependencies": {
+    "express": "^4.21.0"
+  },
+  "devDependencies": {
+    "typescript": "~6.0.0",
+    "@types/node": "~24.0.0",
+    "@types/express": "^4.17.21"
+  }
+}
