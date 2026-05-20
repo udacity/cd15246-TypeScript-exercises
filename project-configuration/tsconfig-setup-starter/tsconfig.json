@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    // TODO: Set the module system to "nodenext" for ESM support
+    "module": "",
+    // TODO: Set the target to "ES2022"
+    "target": "",
+    // TODO: Enable strict mode
+    "strict": ,
+    // TODO: Set the output directory to "./dist"
+    "outDir": "",
+    // TODO: Set the root directory to "./src"
+    "rootDir": "",
+    // TODO: Enable esModuleInterop
+    "esModuleInterop": ,
+    // TODO: Add "node" to the types array (TS 6.x defaults to empty)
+    "types": [],
+    // Skip type checking of declaration files
+    "skipLibCheck": true,
+    // Force consistent file naming
+    "forceConsistentCasingInFileNames": true
+  },
+  // TODO: Include only the "src" directory
+  "include": []
+}
