@@ -1,11 +1,11 @@
 // TODO: Write a type predicate that checks if a value is a string array
-export function isStringArray(val: unknown): val is string[] {
+export function isStringArray(val: unknown) {
   // Check if val is an array where every element is a string
   return false;
 }
 
 // TODO: Write a type predicate that checks if a value is a user object
-export function isUserObject(val: unknown): val is { id: number; name: string } {
+export function isUserObject(val: unknown) {
   // Check if val has id (number) and name (string) properties
   return false;
 }

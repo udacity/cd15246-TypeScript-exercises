@@ -25,7 +25,7 @@ cache.clear();
 
 ## Tips
 
-- Use `<T>` right after `GenericCache` in the class declaration
-- The `Map` type will infer `Map<string, T>` when T is known
-- For `firstOrNull`, use `<T>` between function name and parameters
+- Add a type parameter to the class declaration to make it generic
+- The Map constructor will infer key and value types when you provide them
+- Add a type parameter to `firstOrNull` so it preserves the element type
 - Run `npm test` to verify your implementation

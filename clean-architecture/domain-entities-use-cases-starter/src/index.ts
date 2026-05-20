@@ -4,34 +4,30 @@
 export interface User {
   id: string;
   email: string;
-  // password: string (hashed)
-  // name: string
-  // createdAt: Date
+  // Add password, name, createdAt fields
 }
 
 // TODO: Define Session entity with id, userId, token, expiresAt, createdAt
 export interface Session {
   id: string;
   userId: string;
-  // token: string
-  // expiresAt: Date
-  // createdAt: Date
+  // Add token, expiresAt, createdAt fields
 }
 
 // ===== Repository Interfaces (Ports) =====
 
-// TODO: Complete the UserRepository interface
+// TODO: Complete the UserRepository interface with a create method
 export interface UserRepository {
   findById(id: string): Promise<User | null>;
   findByEmail(email: string): Promise<User | null>;
-  // create(user: Omit<User, "id" | "createdAt">): Promise<User>
+  // Add create method
 }
 
-// TODO: Complete the SessionRepository interface
+// TODO: Complete the SessionRepository interface with create and deleteByUserId methods
 export interface SessionRepository {
   findByToken(token: string): Promise<Session | null>;
-  // create(session: Omit<Session, "id" | "createdAt">): Promise<Session>
-  // deleteByUserId(userId: string): Promise<void>
+  // Add create method
+  // Add deleteByUserId method
 }
 
 // ===== Use Cases =====

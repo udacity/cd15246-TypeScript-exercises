@@ -1,20 +1,16 @@
 // TODO: Add a type parameter T to make this class generic
 export class GenericCache {
-  private store = new Map<string, T>();
-  private maxSize: number;
+  private store = new Map<string, any>();
 
   // TODO: Set the type of maxSize parameter
-  constructor(maxSize) {
+  constructor(maxSize: number) {
     this.maxSize = maxSize;
   }
 
   // TODO: Add proper types to key and value, implement eviction
-  set(key, value): void {
+  set(key: string, value: any): void {
     if (this.store.size >= this.maxSize) {
-      const firstKey = this.store.keys().next().value;
-      if (firstKey !== undefined) {
-        this.store.delete(firstKey);
-      }
+      // TODO: Implement eviction - delete the oldest entry
     }
     this.store.set(key, value);
   }
@@ -51,6 +47,6 @@ export function createUserCache(maxSize: number) {
 }
 
 // TODO: Add a type parameter to make this function generic
-export function firstOrNull(items) {
+export function firstOrNull(items: any[]) {
   return items.length > 0 ? items[0] : null;
 }

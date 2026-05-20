@@ -1,21 +1,19 @@
 // TODO: Implement MyPick<T, K> that picks keys K from T
 // Use mapped types with a constraint that K extends keyof T
 export type MyPick<T, K> = {
-  // [P in K]: T[P]
+  // TODO: Use mapped type syntax to pick keys K from T
 };
 
 // TODO: Implement MyOmit<T, K> that excludes keys K from T
-// Hint: Use Pick with Exclude<keyof T, K>
+// Hint: Use Exclude<keyof T, K> with mapped types
 export type MyOmit<T, K> = {
-  // [P in Exclude<keyof T, K>]: T[P]
+  // TODO: Use mapped type syntax to exclude keys K from T
 };
 
 // TODO: Implement DeepReadonly<T> that makes all properties readonly
 // If a property is an object (not array, not function), make it readonly too
 export type DeepReadonly<T> = {
-  readonly [P in keyof T]: T[P] extends Record<string, unknown>
-    ? DeepReadonly<T[P]>
-    : T[P];
+  // TODO: Add readonly to all properties and recurse into objects
 };
 
 // Test types
@@ -34,10 +32,3 @@ export interface NestedConfig {
     password: string;
   };
 }
-
-// Type-level tests (should compile without error)
-// These verify the types work at compile time
-// Uncomment after implementing:
-// type UserName = MyPick<User, "id" | "name">;
-// type UserWithoutEmail = MyOmit<User, "email">;
-// type ReadonlyConfig = DeepReadonly<NestedConfig>;

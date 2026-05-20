@@ -1,26 +1,17 @@
 // Prisma-like generated types
-// TODO: Define the base delegate type with generic findUnique, findMany, create
+// TODO: Define the base delegate type with generic findUnique, findMany, create methods
 export interface Delegate<T> {
-  // findUnique: (args: { where: { id: number } }) => Promise<T | null>
-  // findMany: () => Promise<T[]>
-  // create: (args: { data: Omit<T, "id"> }) => Promise<T>
+  // Add findUnique, findMany, create methods with proper generics
 }
 
-// TODO: Define User type with id, email, name, role
+// TODO: Define User type with id, email, name, role fields
 export interface User {
-  // id: number;
-  // email: string;
-  // name: string;
-  // role: "user" | "admin";
+  // Add id, email, name, role fields
 }
 
-// TODO: Define Post type with id, title, content, authorId, author
+// TODO: Define Post type with id, title, content, authorId, and author fields
 export interface Post {
-  // id: number;
-  // title: string;
-  // content: string;
-  // authorId: number;
-  // author: User;
+  // Add id, title, content, authorId, author fields
 }
 
 // TODO: Create a type-safe delegate for User

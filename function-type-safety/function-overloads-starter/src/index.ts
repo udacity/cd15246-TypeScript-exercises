@@ -5,10 +5,10 @@ function simulateRequest(url: string): Promise<string> {
   });
 }
 
-// TODO: Add overload signatures:
-// 1. (url: string) => Promise<string> — no timeout
-// 2. (url: string, timeoutMs: number) => Promise<string> — with timeout
-// 3. (url: string, signal: AbortSignal) => Promise<string> — with abort signal
+// TODO: Add overload signatures for fetchData
+// One version takes just a url (no timeout)
+// One version takes a url and timeout in milliseconds
+// One version takes a url and an AbortSignal
 export async function fetchData(
   url: string,
   param?: number | AbortSignal
@@ -19,9 +19,9 @@ export async function fetchData(
   return simulateRequest(url);
 }
 
-// TODO: Add overloads for createUrl:
-// 1. (path: string) => string — relative URL with default base
-// 2. (base: string, path: string) => string — custom base
+// TODO: Add overloads for createUrl
+// One version takes just a path (uses default base)
+// One version takes a custom base URL and a path
 export function createUrl(baseOrPath: string, path?: string): string {
   if (path) {
     return `${baseOrPath.replace(/\/$/, "")}/${path.replace(/^\//, "")}`;

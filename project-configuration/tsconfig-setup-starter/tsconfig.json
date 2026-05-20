@@ -1,16 +1,16 @@
 {
   "compilerOptions": {
-    // TODO: Set the module system to "nodenext" for ESM support
+    // TODO: Set module to the ESM-compatible option for import/export support
     "module": "",
-    // TODO: Set the target to "ES2022"
+    // TODO: Set target to a modern ECMAScript version
     "target": "",
-    // TODO: Enable strict mode
+    // TODO: Enable strict type checking
     "strict": ,
-    // TODO: Set the output directory to "./dist"
+    // TODO: Set the output directory
     "outDir": "",
-    // TODO: Set the root directory to "./src"
+    // TODO: Set the root directory for source files
     "rootDir": "",
-    // TODO: Enable esModuleInterop
+    // TODO: Enable compatibility with CommonJS modules
     "esModuleInterop": ,
     // TODO: Add "node" to the types array (TS 6.x defaults to empty)
     "types": [],
@@ -19,6 +19,6 @@
     // Force consistent file naming
     "forceConsistentCasingInFileNames": true
   },
-  // TODO: Include only the "src" directory
+  // TODO: Include only the source directory
   "include": []
 }
