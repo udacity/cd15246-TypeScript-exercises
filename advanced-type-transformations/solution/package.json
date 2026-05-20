@@ -1,0 +1,13 @@
+{
+  "name": "custom-pick-omit-solution",
+  "version": "1.0.0",
+  "description": "Solution: Build custom Pick and Omit utility types from scratch",
+  "type": "module",
+  "scripts": {
+    "test": "node --experimental-strip-types --test __tests__/*.test.ts"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.7.0"
+  }
+}
