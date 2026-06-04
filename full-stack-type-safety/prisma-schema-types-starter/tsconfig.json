@@ -10,7 +10,7 @@
     "outDir": "dist",
     "types": ["node"],
     "allowImportingTsExtensions": true,
-    "rewriteRelativeImportExtensions": true
+    "noEmit": true
   },
   "include": ["src", "__tests__"]
 }

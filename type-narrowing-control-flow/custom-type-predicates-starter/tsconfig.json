@@ -1,8 +1,8 @@
 {
   "compilerOptions": {
     "target": "ES2022",
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
@@ -10,7 +10,7 @@
     "outDir": "dist",
     "types": ["node"],
     "allowImportingTsExtensions": true,
-    "rewriteRelativeImportExtensions": true
+    "noEmit": true
   },
   "include": ["src/**/*", "__tests__/**/*"]
 }
