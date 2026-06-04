@@ -14,103 +14,158 @@ describe("Domain Layer - Authentication", () => {
   });
 
   it("should export entities, repositories, and use cases", () => {
-    assert.equal(typeof mod.User, "function");
-    assert.equal(typeof mod.Session, "function");
-    assert.equal(typeof mod.UserRepository, "function");
-    assert.equal(typeof mod.SessionRepository, "function");
     assert.equal(typeof mod.RegisterUserUseCase, "function");
     assert.equal(typeof mod.LoginUserUseCase, "function");
+    assert.equal(typeof mod.hashPassword, "function");
+    assert.equal(typeof mod.verifyPassword, "function");
+    assert.equal(typeof mod.generateToken, "function");
   });
 
-  it("RegisterUserUseCase should create a user and return it", async () => {
-    const repo = new mod.UserRepository();
-    const register = new mod.RegisterUserUseCase(repo);
-    const user = await register.execute({
+  it("RegisterUserUseCase should create a user via the repository", async () => {
+    const mockUserRepo: mod.UserRepository = {
+      findById: async () => null,
+      findByEmail: async () => null,
+      create: async (data) => ({
+        id: "user-1",
+        ...data,
+        createdAt: new Date(),
+      }),
+    };
+
+    const registerUseCase = new mod.RegisterUserUseCase(mockUserRepo);
+    const user = await registerUseCase.execute({
       email: "alice@test.com",
-      name: "Alice",
       password: "secret123",
+      name: "Alice",
     });
-    assert.ok(user.id);
+
     assert.equal(user.email, "alice@test.com");
     assert.equal(user.name, "Alice");
-    assert.notEqual(user.password, "secret123");
+    assert.ok(mod.verifyPassword("secret123", user.password));
   });
 
   it("RegisterUserUseCase should reject duplicate email", async () => {
-    const repo = new mod.UserRepository();
-    const register = new mod.RegisterUserUseCase(repo);
-    await register.execute({
-      email: "bob@test.com",
-      name: "Bob",
-      password: "secret123",
-    });
+    const mockUserRepo: mod.UserRepository = {
+      findById: async () => null,
+      findByEmail: async () => ({
+        id: "existing",
+        email: "bob@test.com",
+        password: "hashed_pass",
+        name: "Bob",
+        createdAt: new Date(),
+      }),
+      create: async () => {
+        throw new Error("should not reach");
+      },
+    };
+
+    const registerUseCase = new mod.RegisterUserUseCase(mockUserRepo);
     await assert.rejects(
       () =>
-        register.execute({
+        registerUseCase.execute({
           email: "bob@test.com",
+          password: "pass",
           name: "Bob2",
-          password: "otherpass",
         }),
-      { message: /already exists|duplicate/i }
+      { message: /already exists|duplicate|registered/i }
     );
   });
 
-  it("LoginUserUseCase with correct password should return a session", async () => {
-    const userRepo = new mod.UserRepository();
-    const sessionRepo = new mod.SessionRepository();
-    const register = new mod.RegisterUserUseCase(userRepo);
-    const login = new mod.LoginUserUseCase(userRepo, sessionRepo);
+  it("LoginUserUseCase should create a session on valid credentials", async () => {
+    const mockUserRepo: mod.UserRepository = {
+      findById: async () => null,
+      findByEmail: async () => ({
+        id: "user-1",
+        email: "charlie@test.com",
+        password: mod.hashPassword("correctpass"),
+        name: "Charlie",
+        createdAt: new Date(),
+      }),
+      create: async () => {
+        throw new Error("should not reach");
+      },
+    };
 
-    await register.execute({
+    const mockSessionRepo: mod.SessionRepository = {
+      findByToken: async () => null,
+      create: async (data) => ({
+        id: "session-1",
+        ...data,
+        createdAt: new Date(),
+      }),
+      deleteByUserId: async () => {},
+    };
+
+    const loginUseCase = new mod.LoginUserUseCase(mockUserRepo, mockSessionRepo);
+    const session = await loginUseCase.execute({
       email: "charlie@test.com",
-      name: "Charlie",
-      password: "mypassword",
-    });
-
-    const session = await login.execute({
-      email: "charlie@test.com",
-      password: "mypassword",
-    });
-
-    assert.ok(session.token);
-    assert.equal(session.userId, 1);
-    assert.ok(session.expiresAt > new Date());
-  });
-
-  it("LoginUserUseCase with wrong password should throw", async () => {
-    const userRepo = new mod.UserRepository();
-    const sessionRepo = new mod.SessionRepository();
-    const register = new mod.RegisterUserUseCase(userRepo);
-    const login = new mod.LoginUserUseCase(userRepo, sessionRepo);
-
-    await register.execute({
-      email: "dave@test.com",
-      name: "Dave",
       password: "correctpass",
     });
 
+    assert.ok(session.token.startsWith("tok_"));
+    assert.equal(session.userId, "user-1");
+    assert.ok(session.expiresAt > new Date());
+  });
+
+  it("LoginUserUseCase should reject wrong password", async () => {
+    const mockUserRepo: mod.UserRepository = {
+      findById: async () => null,
+      findByEmail: async () => ({
+        id: "user-1",
+        email: "dave@test.com",
+        password: mod.hashPassword("correctpass"),
+        name: "Dave",
+        createdAt: new Date(),
+      }),
+      create: async () => {
+        throw new Error("should not reach");
+      },
+    };
+
+    const mockSessionRepo: mod.SessionRepository = {
+      findByToken: async () => null,
+      create: async () => {
+        throw new Error("should not reach");
+      },
+      deleteByUserId: async () => {},
+    };
+
+    const loginUseCase = new mod.LoginUserUseCase(mockUserRepo, mockSessionRepo);
     await assert.rejects(
       () =>
-        login.execute({
+        loginUseCase.execute({
           email: "dave@test.com",
           password: "wrongpass",
         }),
-      { message: /invalid|wrong|incorrect/i }
+      { message: /invalid|wrong|incorrect|credentials/i }
     );
   });
 
   it("LoginUserUseCase for non-existent user should throw", async () => {
-    const userRepo = new mod.UserRepository();
-    const sessionRepo = new mod.SessionRepository();
-    const login = new mod.LoginUserUseCase(userRepo, sessionRepo);
+    const mockUserRepo: mod.UserRepository = {
+      findById: async () => null,
+      findByEmail: async () => null,
+      create: async () => {
+        throw new Error("should not reach");
+      },
+    };
 
+    const mockSessionRepo: mod.SessionRepository = {
+      findByToken: async () => null,
+      create: async () => {
+        throw new Error("should not reach");
+      },
+      deleteByUserId: async () => {},
+    };
+
+    const loginUseCase = new mod.LoginUserUseCase(mockUserRepo, mockSessionRepo);
     await assert.rejects(
       () =>
-        login.execute({
+        loginUseCase.execute({
           email: "nobody@test.com",
           password: "anypass",
         }),
-      { message: /not found|does not exist/i }
+      { message: /invalid|wrong|incorrect|credentials|not found|exist/i }
     );
   });
 });

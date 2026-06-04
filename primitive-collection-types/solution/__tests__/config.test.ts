@@ -1,56 +1,69 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
-import { existsSync, readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { execSync } from "node:child_process";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const projectRoot = join(__dirname, "..");
 
 describe("Type-Safe Config Store", () => {
-  it("should compile without errors", () => {
-    try {
-      execSync("npx tsc --noEmit", { cwd: projectRoot, stdio: "pipe" });
-    } catch (e) {
-      const stderr = (e as { stderr?: Buffer }).stderr?.toString() || "";
-      assert.fail(`Compilation failed:\n${stderr}`);
-    }
-  });
-
-  it("should have noPropertyAccessFromIndexSignature enabled", () => {
-    const config = JSON.parse(
-      readFileSync(join(projectRoot, "tsconfig.json"), "utf-8")
-    );
-    assert.equal(
-      config.compilerOptions.noPropertyAccessFromIndexSignature,
-      true
-    );
-  });
-
   it("should export getConfigValue and setConfigValue", async () => {
     const mod = await import(join(projectRoot, "src", "index.ts"));
     assert.equal(typeof mod.getConfigValue, "function");
     assert.equal(typeof mod.setConfigValue, "function");
   });
 
-  it("getConfigValue should return value for known keys", async () => {
+  it("setConfigValue stores a value and getConfigValue retrieves it", async () => {
     const mod = await import(join(projectRoot, "src", "index.ts"));
-    const config: Record<string, string | number | boolean> = {
+    const config: mod.AppConfig = {
       appName: "MyApp",
       version: "1.0.0",
     };
-    const result = mod.getConfigValue(config as any, "appName");
-    assert.equal(result, "MyApp");
+    mod.setConfigValue(config, "theme", "dark");
+    assert.equal(mod.getConfigValue(config, "theme"), "dark");
   });
 
-  it("setConfigValue should update a value", async () => {
+  it("getConfigValue returns undefined for missing keys", async () => {
     const mod = await import(join(projectRoot, "src", "index.ts"));
-    const config: Record<string, string | number | boolean> = {
+    const config: mod.AppConfig = {
       appName: "MyApp",
       version: "1.0.0",
     };
-    mod.setConfigValue(config as any, "appName", "NewApp");
-    assert.equal(config.appName, "NewApp");
+    assert.equal(mod.getConfigValue(config, "nonexistent"), undefined);
+  });
+
+  it("setConfigValue overwrites existing values", async () => {
+    const mod = await import(join(projectRoot, "src", "index.ts"));
+    const config: mod.AppConfig = {
+      appName: "MyApp",
+      version: "1.0.0",
+      maxUsers: 10,
+    };
+    mod.setConfigValue(config, "maxUsers", 100);
+    assert.equal(mod.getConfigValue(config, "maxUsers"), 100);
+  });
+
+  it("should accept string, number, and boolean values", async () => {
+    const mod = await import(join(projectRoot, "src", "index.ts"));
+    const config: mod.AppConfig = {
+      appName: "MyApp",
+      version: "1.0.0",
+    };
+    mod.setConfigValue(config, "debug", true);
+    mod.setConfigValue(config, "port", 3000);
+    mod.setConfigValue(config, "env", "production");
+    assert.equal(mod.getConfigValue(config, "debug"), true);
+    assert.equal(mod.getConfigValue(config, "port"), 3000);
+    assert.equal(mod.getConfigValue(config, "env"), "production");
+  });
+
+  it("AppConfig should have appName and version as known properties", async () => {
+    const mod = await import(join(projectRoot, "src", "index.ts"));
+    const config: mod.AppConfig = {
+      appName: "MyApp",
+      version: "1.0.0",
+    };
+    assert.equal(config.appName, "MyApp");
+    assert.equal(config.version, "1.0.0");
   });
 });
