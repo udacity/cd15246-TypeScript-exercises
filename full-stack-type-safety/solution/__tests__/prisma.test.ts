@@ -3,66 +3,90 @@ import assert from "node:assert/strict";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { execSync } from "node:child_process";
+import type { User, Post, Delegate } from "../src/index.ts";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const projectRoot = join(__dirname, "..");
 
+// ---- Type-Level Assertions (same as starter, should pass here) ----
+
+type TypeEqual<A, B> = A extends B ? (B extends A ? true : false) : false;
+const assertType = <T extends true>(_value: T): void => {};
+
+type _DelegateStructCorrect<T> = TypeEqual<
+  Delegate<T>,
+  {
+    findUnique: (args: { where: { id: number } }) => Promise<T | null>;
+    findMany: () => Promise<T[]>;
+    create: (args: { data: Omit<T, "id"> }) => Promise<T>;
+  }
+>;
+
+type _UserShapeValid = TypeEqual<
+  User,
+  { id: number; email: string; name: string; role: "user" | "admin" }
+>;
+
+type _PostFieldsValid = Post extends {
+  id: number; title: string; content: string;
+  authorId: number; author: User;
+} ? TypeEqual<
+    Pick<Post, "id" | "title" | "content" | "authorId">,
+    { id: number; title: string; content: string; authorId: number }
+  > : false;
+
+assertType<_DelegateStructCorrect<User>>(true);
+assertType<_DelegateStructCorrect<Post>>(true);
+assertType<_UserShapeValid>(true);
+assertType<_PostFieldsValid>(true);
+
+// ---- Runtime Tests ----
+
 describe("Prisma-Style Type Safety", () => {
-  it("should compile without errors", () => {
+  it("all type assertions pass", () => {
     try {
       execSync("npx tsc --noEmit", { cwd: projectRoot, stdio: "pipe" });
     } catch (e) {
       const stderr = (e as { stderr?: Buffer }).stderr?.toString() || "";
-      assert.fail(`Compilation failed:\n${stderr}`);
+      const stdout = (e as { stdout?: Buffer }).stdout?.toString() || "";
+      assert.fail(
+        `TypeScript compilation failed.\n${stderr}${stdout}`
+      );
     }
   });
 
-  it("should export type-safe delegates", async () => {
-    const mod = await import(join(projectRoot, "src", "index.ts"));
-    assert.ok(typeof mod.createUserDelegate === "function");
-    assert.ok(typeof mod.createPostDelegate === "function");
-    assert.ok(typeof mod.Delegate !== "undefined" || true); // type-only, erased at runtime
-  });
-
-  it("createUserDelegate should create a new user", async () => {
+  it("createUserDelegate should create and find users", async () => {
     const mod = await import(join(projectRoot, "src", "index.ts"));
     const delegate = mod.createUserDelegate();
+
     const user = await delegate.create({
-      data: { email: "test@test.com", name: "Test", role: "user" },
+      data: { email: "alice@test.com", name: "Alice", role: "admin" },
     });
-    assert.equal(user.email, "test@test.com");
-    assert.equal(user.name, "Test");
-  });
 
-  it("createUserDelegate should find users", async () => {
-    const mod = await import(join(projectRoot, "src", "index.ts"));
-    const delegate = mod.createUserDelegate();
-    const users = await delegate.findMany();
-    assert.ok(Array.isArray(users));
-  });
+    assert.equal(user.email, "alice@test.com");
+    assert.equal(user.name, "Alice");
+    assert.equal(user.role, "admin");
 
-  it("createUserDelegate should find unique user by id", async () => {
-    const mod = await import(join(projectRoot, "src", "index.ts"));
-    const delegate = mod.createUserDelegate();
-    await delegate.create({
-      data: { email: "find@test.com", name: "FindMe", role: "admin" },
-    });
+    const found = await delegate.findUnique({ where: { id: user.id } });
+    assert.equal(found?.name, "Alice");
+
     const all = await delegate.findMany();
-    const found = await delegate.findUnique({ where: { id: all[all.length - 1].id } });
-    assert.equal(found?.name, "FindMe");
+    assert.ok(all.length >= 1);
   });
 
-  it("createPostDelegate should create with author relation", async () => {
+  it("createPostDelegate should create posts with author relation", async () => {
     const mod = await import(join(projectRoot, "src", "index.ts"));
     const userDelegate = mod.createUserDelegate();
     const author = await userDelegate.create({
-      data: { email: "author@test.com", name: "Author", role: "admin" },
+      data: { email: "bob@test.com", name: "Bob", role: "user" },
     });
+
     const postDelegate = mod.createPostDelegate();
     const post = await postDelegate.create({
       data: { title: "Hello", content: "World", authorId: author.id },
     });
+
     assert.equal(post.title, "Hello");
-    assert.equal(post.author.name, "Author");
+    assert.equal(post.author?.name, "Bob");
   });
 });
