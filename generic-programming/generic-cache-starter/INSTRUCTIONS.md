@@ -1,6 +1,19 @@
-# Exercise: Build a Generic Cache
+# Build a Generic Cache
 
 Build a type-safe generic cache class that stores values by key.
+
+## Setup
+
+```bash
+# 1. Navigate to the starter folder
+cd exercises/generic-programming/generic-cache-starter
+
+# 2. Install dependencies
+npm install
+
+# 3. Run the tests to see them fail
+npm test
+```
 
 ## Requirements
 
@@ -23,9 +36,14 @@ cache.size; // 1
 cache.clear();
 ```
 
-## Tips
+## Solution
 
-- Add a type parameter to the class declaration to make it generic
-- The Map constructor will infer key and value types when you provide them
-- Add a type parameter to `firstOrNull` so it preserves the element type
-- Run `npm test` to verify your implementation
+Located in the `solution/` folder. Use it to check your work after you have attempted the exercise yourself.
+
+## Hints
+
+1. Add a type parameter `<T>` to the class name: `class GenericCache<T>`
+2. The internal `Map` should be `Map<string, T>` not `Map<string, any>`
+3. For eviction, use `this.store.keys().next()` to get the oldest key
+4. Add a type parameter to `firstOrNull` so it preserves the element type: `<T>(items: T[]): T | null`
+5. Run `npm test` after each change to verify your implementation

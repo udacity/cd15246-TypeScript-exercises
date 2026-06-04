@@ -4,6 +4,19 @@ Your team is starting a new Node.js project and needs a proper TypeScript setup 
 
 Your task is to complete the `tsconfig.json` file so the project compiles correctly as an ESM project.
 
+## Setup
+
+```bash
+# 1. Navigate to the starter folder
+cd exercises/project-configuration/tsconfig-setup-starter
+
+# 2. Install dependencies (includes TypeScript and Node types)
+npm install
+
+# 3. Run the tests to see them fail
+npm test
+```
+
 ## Requirements
 
 1. Set the module system to `nodenext` for proper ESM support
@@ -20,7 +33,13 @@ Your task is to complete the `tsconfig.json` file so the project compiles correc
 - `src/index.ts` — a simple entry point that uses ESM imports
 - `package.json` — already configured with `"type": "module"`
 
-## Verify
+## Solution
 
-Run `npx tsc --noEmit` to check for type errors.
-Run `npx tsc` to compile and verify the `dist` folder is created.
+Located in the `solution/` folder. Use it to check your work after you have attempted the exercise yourself.
+
+## Hints
+
+1. In TypeScript 6.0, `strict: true` is the default — but you should still set it explicitly
+2. `outDir` and `rootDir` must be consistent — source files go under `src/`, output goes to `dist/`
+3. Use `"types": ["node"]` if you need Node.js type definitions
+4. Run `npm test` after each change to verify your configuration is correct

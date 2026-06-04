@@ -6,6 +6,19 @@ Work with auto-generated types from a Prisma-like schema. You'll define model ty
 
 Understand how Prisma generates types from schema definitions and implement type-safe database operations using generics.
 
+## Setup
+
+```bash
+# 1. Navigate to the starter folder
+cd exercises/full-stack-type-safety/prisma-schema-types-starter
+
+# 2. Install dependencies
+npm install
+
+# 3. Run the tests to see them fail
+npm test
+```
+
 ## Requirements
 
 1. Define the `Delegate<T>` interface with generic `findUnique`, `findMany`, and `create` methods
@@ -18,11 +31,15 @@ Understand how Prisma generates types from schema definitions and implement type
 
 1. Open `src/index.ts` and replace the `// TODO` comments with proper type annotations
 2. Run `npm test` to verify your implementation passes all tests
-3. Run `npm run type-check` to ensure no TypeScript errors
+
+## Solution
+
+Located in the `solution/` folder. Use it to check your work after you have attempted the exercise yourself.
 
 ## Hints
 
-- `Delegate<T>` should have three methods: `findUnique`, `findMany`, `create`
-- Use `Omit<T, "id">` for the `create` method's data parameter since IDs are auto-generated
-- The `role` field should be a union type: `"user" | "admin"`
-- The `Post` type's `author` field should reference the `User` type
+1. `Delegate<T>` should have three methods: `findUnique`, `findMany`, `create`
+2. Use `Omit<T, "id">` for the `create` method's data parameter since IDs are auto-generated
+3. The `role` field should be a union type: `"user" | "admin"`
+4. The `Post` type's `author` field should reference the `User` type
+5. Run `npm test` after each change to verify your implementation

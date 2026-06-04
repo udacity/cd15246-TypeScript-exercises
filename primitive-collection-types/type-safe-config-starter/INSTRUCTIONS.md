@@ -4,6 +4,19 @@ You're building a configuration system that stores app settings. Some settings a
 
 Your goal is to create a type-safe configuration store using index signatures. The tsconfig has `noPropertyAccessFromIndexSignature` enabled — this means dynamic properties accessed via the index signature can only use bracket notation, not dot notation.
 
+## Setup
+
+```bash
+# 1. Navigate to the starter folder
+cd exercises/primitive-collection-types/type-safe-config-starter
+
+# 2. Install dependencies
+npm install
+
+# 3. Run the tests to see them fail
+npm test
+```
+
 ## Requirements
 
 1. Complete the `AppConfig` interface with known properties (`appName: string`, `version: string`) and an index signature for dynamic string keys with `string | number | boolean` values
@@ -15,6 +28,13 @@ Your goal is to create a type-safe configuration store using index signatures. T
 - `src/index.ts` — starter code with TODO markers
 - `tsconfig.json` — pre-configured with `noPropertyAccessFromIndexSignature: true`
 
-## Verify
+## Solution
 
-Run `npm test` to verify your solution.
+Located in the `solution/` folder. Use it to check your work after you have attempted the exercise yourself.
+
+## Hints
+
+1. Index signature syntax: `[key: string]: string | number | boolean`
+2. Bracket notation: `config[key]` — dot notation (`config.key`) will cause a type error
+3. Use `key in config` to check if a key exists before returning
+4. Run `npm test` after each change to verify your implementation

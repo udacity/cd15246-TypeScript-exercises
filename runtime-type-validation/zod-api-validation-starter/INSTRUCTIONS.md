@@ -1,6 +1,19 @@
-# Exercise: Zod API Validation
+# Zod API Validation
 
 Build runtime validation for an API using Zod schemas.
+
+## Setup
+
+```bash
+# 1. Navigate to the starter folder
+cd exercises/runtime-type-validation/zod-api-validation-starter
+
+# 2. Install dependencies
+npm install
+
+# 3. Run the tests to see them fail
+npm test
+```
 
 ## Requirements
 
@@ -20,22 +33,16 @@ Build runtime validation for an API using Zod schemas.
 
 5. Implement `safeParseUsers` that handles invalid data gracefully.
 
+## Solution
+
+Located in the `solution/` folder. Use it to check your work after you have attempted the exercise yourself.
+
 ## Hints
 
-- Use `z.string().email()` for email validation
-- Use `z.enum(["user", "admin", "guest"])` for the role
-- Use `UserSchema.nullable()` for the optional data field
-- Use `schema.parse()` for throwing validation
-- Use `schema.safeParse()` for non-throwing validation
-- Use `z.infer<typeof YourSchema>` to derive types
-
-## Files
-
-- `src/index.ts` - Add your code here
-- `__tests__/validation.test.ts` - Run tests to verify
-
-## Run Tests
-
-```bash
-npm test
-```
+1. Use `z.string().email()` for email validation
+2. Use `z.enum(["user", "admin", "guest"])` for the role
+3. Use `UserSchema.nullable()` for the optional data field
+4. Use `schema.parse()` for throwing validation
+5. Use `schema.safeParse()` for non-throwing validation
+6. Use `z.infer<typeof YourSchema>` to derive types
+7. Run `npm test` after each change to verify your implementation

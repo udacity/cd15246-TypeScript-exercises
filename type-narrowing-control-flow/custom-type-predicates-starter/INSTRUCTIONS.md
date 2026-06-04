@@ -8,6 +8,19 @@ In this exercise, you'll write type predicate functions (`val is Type`) to valid
 - Combine runtime checks with type narrowing
 - Process unknown data safely using multiple predicates
 
+## Setup
+
+```bash
+# 1. Navigate to the starter folder
+cd exercises/type-narrowing-control-flow/custom-type-predicates-starter
+
+# 2. Install dependencies
+npm install
+
+# 3. Run the tests to see them fail
+npm test
+```
+
 ## Instructions
 
 1. Open `src/index.ts`
@@ -19,12 +32,14 @@ In this exercise, you'll write type predicate functions (`val is Type`) to valid
    - If `isStringArray(data)` → return `"String array with <count> items"`
    - Otherwise → return `"Unknown data"`
 
-## Running the Exercise
+## Solution
 
-```bash
-# Type-check your solution
-npm run type-check
+Located in the `solution/` folder. Use it to check your work after you have attempted the exercise yourself.
 
-# Run tests
-npm test
-```
+## Hints
+
+1. Type predicate syntax: `function isX(value: unknown): value is XType { ... }`
+2. Check arrays with `Array.isArray(val)` before iterating
+3. For `isUserObject`, verify `typeof val === "object" && val !== null` first
+4. Use `typeof val.id === "number"` to check field types at runtime
+5. Run `npm test` after each function to validate your implementation

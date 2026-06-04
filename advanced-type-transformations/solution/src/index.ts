@@ -27,8 +27,3 @@ export interface NestedConfig {
     password: string;
   };
 }
-
-// Compile-time verification
-type UserName = MyPick<User, "id" | "name">;
-type UserWithoutEmail = MyOmit<User, "email">;
-type ReadonlyConfig = DeepReadonly<NestedConfig>;

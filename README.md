@@ -1,22 +1,15 @@
 # TypeScript Exercises — cd15246
 
-This repository contains the hands-on exercises and demo implementations for the Udacity TypeScript course (cd15246). Each module has a starter folder for the exercise and a solution folder to check your work.
+This directory contains the hands-on exercises for the Udacity TypeScript course (cd15246).
+Each topic area has a starter folder with the exercise scaffold and a solution folder to check your work.
 
-## Modules
+## Available Exercises
 
-| Module | Exercise | Demo |
-|--------|----------|------|
-| Project Configuration | `tsconfig-setup-starter/` | `demos/express-server-setup/` |
-| Primitive & Collection Types | `type-safe-config-starter/` | `demos/tuple-processor/` |
-| Structural Type Design | `discriminated-user-roles-starter/` | `demos/api-response-types/` |
-| Type Narrowing & Control Flow | `custom-type-predicates-starter/` | `demos/state-machine-assertions/` |
-| Function Type Safety | `function-overloads-starter/` | `demos/callback-to-async/` |
-| Generic Programming | `generic-cache-starter/` | `demos/generic-data-fetcher/` |
-| Advanced Type Transformations | `custom-pick-omit-starter/` | `demos/deep-partial-form/` |
-| Runtime Type Validation | `zod-api-validation-starter/` | `demos/zod-form-validation/` |
-| Full-Stack Type Safety | `prisma-schema-types-starter/` | `demos/trpc-api-setup/` |
-| Testing Type-Safe Code | `jest-data-transformation-starter/` | `demos/jest-mocking-external/` |
-| Clean Architecture | `domain-entities-use-cases-starter/` | `demos/infrastructure-di/` |
+| Topic | Exercise Starter | Solution |
+|-------|-----------------|----------|
+| Advanced Type Transformations | `custom-pick-omit-starter/` | `solution/` |
+
+Additional exercises are under development. Instructions for future exercises can be found in each module's `exercises/` folder under `modules/`.
 
 ## Prerequisites
 
@@ -25,15 +18,11 @@ This repository contains the hands-on exercises and demo implementations for the
 
 ## Running an Exercise
 
-Each module folder contains:
-
-- `*-starter/` — the exercise scaffold with TODO markers
-- `solution/` — the completed implementation
-- `demos/*/` — instructor-led demo code
+Each starter folder is a complete Node.js project with its own `package.json`, `tsconfig.json`, and tests.
 
 ```bash
-# Navigate to any starter or solution folder
-cd project-configuration/solution
+# Navigate to the starter folder
+cd exercises/advanced-type-transformations/custom-pick-omit-starter
 
 # Install dependencies
 npm install
@@ -46,8 +35,10 @@ Starter tests will fail until you complete the TODOs. Solution tests should all 
 
 ## Running a Demo
 
+Demos are located in the corresponding module folders under `modules/`:
+
 ```bash
-cd project-configuration/demos/express-server-setup
+cd modules/implementation-apply-advanced-type-transformations/demos/deep-partial-form
 npm install
 npm test
 ```
@@ -56,19 +47,35 @@ npm test
 
 ```
 exercises/
-├── project-configuration/
-│   ├── tsconfig-setup-starter/   ← your work goes here
-│   ├── solution/                 ← reference implementation
+├── README.md                          ← this file
+├── advanced-type-transformations/
+│   ├── custom-pick-omit-starter/      ← your work goes here
+│   ├── solution/                      ← reference implementation
 │   └── demos/
-│       └── express-server-setup/ ← instructor-led demo
-├── primitive-collection-types/
-│   ├── type-safe-config-starter/
-│   ├── solution/
-│   └── demos/
-│       └── tuple-processor/
-├── ... (11 modules total)
+│       └── deep-partial-form/         ← instructor-led demo
+└── ... (more topics as exercises are built)
 ```
 
 ## Test Runners
 
-Most modules use the Node.js built-in test runner (`node:test`) with `--experimental-strip-types`. The Testing module uses Jest.
+Most modules use the Node.js built-in test runner (`node:test` with `--experimental-strip-types`).
+The Testing module uses Jest.
+
+## Module-Level Exercise Instructions
+
+Each implementation module in `modules/` has an `exercises/` folder with detailed instructions:
+
+| Module | Instructions |
+|--------|-------------|
+| Apply Project Configuration | `modules/implementation-apply-project-config/exercises/INSTRUCTIONS.md` |
+| Apply Primitive & Collection Types | `modules/implementation-apply-primitive-collection/exercises/INSTRUCTIONS.md` |
+| Apply Structural Type Design | `modules/implementation-apply-structural-type-design/exercises/INSTRUCTIONS.md` |
+| Apply Type Narrowing & Control Flow | `modules/implementation-apply-type-narrowing-control-flow/exercises/INSTRUCTIONS.md` |
+| Apply Function Type Safety | `modules/implementation-apply-function-type-safety/exercises/INSTRUCTIONS.md` |
+| Apply Generic Programming | `modules/implementation-apply-generic-programming/exercises/INSTRUCTIONS.md` |
+| Apply Advanced Type Transformations | `modules/implementation-apply-advanced-type-transformations/exercises/INSTRUCTIONS.md` |
+| Apply Runtime Type Validation | `modules/implementation-apply-runtime-type-validation/exercises/INSTRUCTIONS.md` |
+| Apply Full-Stack Type Safety | `modules/implementation-apply-full-stack-type-safety/exercises/INSTRUCTIONS.md` |
+| Apply Testing Type-Safe Code | `modules/implementation-apply-testing-type-safe-code/exercises/jest-data-transformation.md` |
+| Apply Clean Architecture | `modules/implementation-apply-clean-architecture/exercises/INSTRUCTIONS.md` |
+| Project: Dashy Analytics | `modules/project-clean-architecture-dashy-analytics/exercises/INSTRUCTIONS.md` |

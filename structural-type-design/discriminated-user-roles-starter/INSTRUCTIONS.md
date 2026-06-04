@@ -4,6 +4,19 @@ Your application has three types of users: regular Users, Admins with special pe
 
 Use a discriminated union to model these roles. Each role has a `role` property that acts as the discriminant, allowing TypeScript to narrow the type based on its value.
 
+## Setup
+
+```bash
+# 1. Navigate to the starter folder
+cd exercises/structural-type-design/discriminated-user-roles-starter
+
+# 2. Install dependencies
+npm install
+
+# 3. Run the tests to see them fail
+npm test
+```
+
 ## Requirements
 
 1. Complete the `User`, `Admin`, and `Guest` interfaces — each with a `role` discriminant property
@@ -16,6 +29,14 @@ Use a discriminated union to model these roles. Each role has a `role` property 
 
 - `src/index.ts` — starter code with TODO markers
 
-## Verify
+## Solution
 
-Run `npm test` to verify your solution.
+Located in the `solution/` folder. Use it to check your work after you have attempted the exercise yourself.
+
+## Hints
+
+1. Use a literal type for the discriminant: `role: "user"` (not just `string`)
+2. A discriminated union lets TypeScript narrow the type in switch/case and if/else chains
+3. Use `switch (role.role)` or `if (role.role === "admin")` to narrow
+4. Use `Date.now()` to check if a guest session has expired
+5. Run `npm test` after each change to verify your implementation

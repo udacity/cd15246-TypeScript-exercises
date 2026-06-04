@@ -8,6 +8,19 @@ In this exercise, you'll implement function overloads for a data fetcher utility
 - Implement a single implementation signature that satisfies all overloads
 - Use TypeScript overloads to provide precise type information for varying call patterns
 
+## Setup
+
+```bash
+# 1. Navigate to the starter folder
+cd exercises/function-type-safety/function-overloads-starter
+
+# 2. Install dependencies
+npm install
+
+# 3. Run the tests to see them fail
+npm test
+```
+
 ## Instructions
 
 1. Open `src/index.ts`
@@ -21,12 +34,14 @@ In this exercise, you'll implement function overloads for a data fetcher utility
    - `(base: string, path: string) => string` — custom base URL
 5. Make sure both functions compile and pass all tests
 
-## Running the Exercise
+## Solution
 
-```bash
-# Type-check your solution
-npm run type-check
+Located in the `solution/` folder. Use it to check your work after you have attempted the exercise yourself.
 
-# Run tests
-npm test
-```
+## Hints
+
+1. Overload signatures go BEFORE the implementation signature — TypeScript matches calls against them in order
+2. The implementation signature must be compatible with ALL overloads
+3. Use `typeof` checks in the implementation body to distinguish between overload cases
+4. For the `AbortSignal` overload, convert the signal to a timeout using `AbortSignal.timeout()`
+5. Run `npm test` after each change to verify your overloads
