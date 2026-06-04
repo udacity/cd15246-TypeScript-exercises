@@ -8,92 +8,50 @@ import {
 } from "../src/index.ts";
 
 describe("isStringArray", () => {
-  it("returns true for a string array", () => {
+  it("should distinguish string arrays from other values", () => {
     assert.equal(isStringArray(["a", "b", "c"]), true);
-  });
-
-  it("returns false for a mixed array", () => {
-    assert.equal(isStringArray([1, "b"]), false);
-  });
-
-  it("returns false for a non-array value", () => {
-    assert.equal(isStringArray("hello"), false);
-  });
-
-  it("returns false for null", () => {
-    assert.equal(isStringArray(null), false);
-  });
-
-  it("returns false for an empty array", () => {
     assert.equal(isStringArray([]), true);
+    assert.equal(isStringArray([1, "b"]), false);
+    assert.equal(isStringArray("hello"), false);
+    assert.equal(isStringArray(null), false);
   });
 });
 
 describe("isUserObject", () => {
-  it("returns true for a valid user object", () => {
+  it("should validate correct user objects and reject invalid ones", () => {
     assert.equal(isUserObject({ id: 1, name: "Alice" }), true);
-  });
-
-  it("returns false when id is missing", () => {
     assert.equal(isUserObject({ name: "Alice" }), false);
-  });
-
-  it("returns false when name is missing", () => {
     assert.equal(isUserObject({ id: 1 }), false);
-  });
-
-  it("returns false when id is not a number", () => {
     assert.equal(isUserObject({ id: "1", name: "Alice" }), false);
-  });
-
-  it("returns false for null", () => {
     assert.equal(isUserObject(null), false);
-  });
-
-  it("returns false for a primitive value", () => {
     assert.equal(isUserObject(42), false);
   });
 });
 
 describe("isValidEmail", () => {
-  it("returns true for a valid email", () => {
+  it("should validate correct emails and reject malformed ones", () => {
     assert.equal(isValidEmail("user@example.com"), true);
-  });
-
-  it("returns false when @ is missing", () => {
     assert.equal(isValidEmail("userexample.com"), false);
-  });
-
-  it("returns false when nothing before @", () => {
     assert.equal(isValidEmail("@example.com"), false);
-  });
-
-  it("returns false when nothing after @", () => {
     assert.equal(isValidEmail("user@"), false);
   });
 });
 
 describe("processData", () => {
-  it('returns "User: <name>" for a valid user object', () => {
+  it('should return "User: <name>" for a valid user object', () => {
     assert.equal(processData({ id: 1, name: "Alice" }), "User: Alice");
   });
 
-  it('returns "String array with <count> items" for a string array', () => {
-    assert.equal(
-      processData(["hello", "world"]),
-      "String array with 2 items"
-    );
+  it('should return "String array with <count> items" for a string array', () => {
+    assert.equal(processData(["hello", "world"]), "String array with 2 items");
   });
 
-  it('returns "String array with 0 items" for an empty array', () => {
+  it('should return "String array with 0 items" for an empty array', () => {
     assert.equal(processData([]), "String array with 0 items");
   });
 
-  it('returns "Unknown data" for a primitive', () => {
+  it('should return "Unknown data" for non-matching types', () => {
     assert.equal(processData(42), "Unknown data");
-  });
-
-  it('returns "Unknown data" for null', () => {
     assert.equal(processData(null), "Unknown data");
   });
 });

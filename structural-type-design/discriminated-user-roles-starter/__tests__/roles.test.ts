@@ -51,7 +51,7 @@ describe("Discriminated User Roles", () => {
     assert.equal(mod.getDisplayName(guest), "Guest");
   });
 
-  it("hasPermission should check admin permissions", async () => {
+  it("hasPermission should check admin permissions and reject non-admins", async () => {
     const mod = await import(join(projectRoot, "src", "index.ts"));
     const admin = {
       role: "admin",
@@ -61,10 +61,7 @@ describe("Discriminated User Roles", () => {
     };
     assert.equal(mod.hasPermission(admin, "read"), true);
     assert.equal(mod.hasPermission(admin, "delete"), false);
-  });
 
-  it("hasPermission should return false for non-admins", async () => {
-    const mod = await import(join(projectRoot, "src", "index.ts"));
     const user = { role: "user", id: 1, name: "Alice", email: "a@test.com" };
     assert.equal(mod.hasPermission(user, "read"), false);
   });

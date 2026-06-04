@@ -65,8 +65,43 @@ describe("Prisma-Style Type Safety", () => {
       const stderr = (e as { stderr?: Buffer }).stderr?.toString() || "";
       const stdout = (e as { stdout?: Buffer }).stdout?.toString() || "";
       assert.fail(
-        `TypeScript compilation failed — one or more type assertions were not satisfied.\n${stderr}${stdout}`
+        `TypeScript compilation failed.\n${stderr}${stdout}`
       );
     }
+  });
+
+  it("createUserDelegate should create and find users", async () => {
+    const mod = await import(join(projectRoot, "src", "index.ts"));
+    const delegate = mod.createUserDelegate();
+
+    const user = await delegate.create({
+      data: { email: "alice@test.com", name: "Alice", role: "admin" },
+    });
+
+    assert.equal(user.email, "alice@test.com");
+    assert.equal(user.name, "Alice");
+    assert.equal(user.role, "admin");
+
+    const found = await delegate.findUnique({ where: { id: user.id } });
+    assert.equal(found?.name, "Alice");
+
+    const all = await delegate.findMany();
+    assert.ok(all.length >= 1);
+  });
+
+  it("createPostDelegate should create posts with author relation", async () => {
+    const mod = await import(join(projectRoot, "src", "index.ts"));
+    const userDelegate = mod.createUserDelegate();
+    const author = await userDelegate.create({
+      data: { email: "bob@test.com", name: "Bob", role: "user" },
+    });
+
+    const postDelegate = mod.createPostDelegate();
+    const post = await postDelegate.create({
+      data: { title: "Hello", content: "World", authorId: author.id },
+    });
+
+    assert.equal(post.title, "Hello");
+    assert.equal(post.author?.name, "Bob");
   });
 });

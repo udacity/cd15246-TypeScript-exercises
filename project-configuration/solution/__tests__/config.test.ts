@@ -8,12 +8,18 @@ import { execSync } from "node:child_process";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const projectRoot = join(__dirname, "..");
 
+// Strip single-line comments from JSON (TypeScript tsconfig uses JSONC)
+function stripJsonComments(json: string): string {
+  return json.replace(/\/\/.*$/gm, "");
+}
+
 describe("TypeScript Configuration", () => {
   it("should have a valid tsconfig.json", () => {
     const configPath = join(projectRoot, "tsconfig.json");
     assert.ok(existsSync(configPath), "tsconfig.json must exist");
 
-    const config = JSON.parse(readFileSync(configPath, "utf-8"));
+    const raw = readFileSync(configPath, "utf-8");
+    const config = JSON.parse(stripJsonComments(raw));
     const opts = config.compilerOptions;
 
     assert.equal(opts.module, "nodenext", 'module must be "nodenext"');
@@ -38,6 +44,7 @@ describe("TypeScript Configuration", () => {
   });
 
   it("should output compiled JS to dist folder", () => {
+    // Clean previous build
     execSync("npx tsc", { cwd: projectRoot, stdio: "pipe" });
 
     const distPath = join(projectRoot, "dist", "index.js");

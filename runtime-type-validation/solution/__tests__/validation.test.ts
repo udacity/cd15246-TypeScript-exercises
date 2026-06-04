@@ -17,32 +17,43 @@ describe("Zod API Validation", () => {
     }
   });
 
-  it("should export UserSchema and ApiResponseSchema", async () => {
+  it("should export schemas with field definitions", async () => {
     const mod = await import(join(projectRoot, "src", "index.ts"));
-    assert.ok(mod.UserSchema);
-    assert.ok(mod.ApiResponseSchema);
+    assert.ok(mod.UserSchema, "UserSchema must be exported");
+    assert.ok(mod.ApiResponseSchema, "ApiResponseSchema must be exported");
+
+    // Verify UserSchema actually validates: a valid user object passes
+    const validUser = { id: 1, name: "Alice", email: "alice@test.com", role: "user" };
+    const validResult = mod.UserSchema.safeParse(validUser);
+    assert.equal(validResult.success, true, "UserSchema should accept valid user data");
+
+    // Verify UserSchema rejects: invalid types fail validation
+    const invalidUser = { id: "not-a-number", name: 42 };
+    const invalidResult = mod.UserSchema.safeParse(invalidUser);
+    assert.equal(invalidResult.success, false, "UserSchema should reject invalid data");
   });
 
-  it("should export User and ApiResponse types", async () => {
+  it("ApiResponseSchema should define status and data fields", async () => {
     const mod = await import(join(projectRoot, "src", "index.ts"));
-    // Types don't exist at runtime, so just check the module loads
-    assert.ok(mod);
-  });
-
-  it("parseUserResponse should parse valid JSON", async () => {
-    const mod = await import(join(projectRoot, "src", "index.ts"));
-    const json = JSON.stringify({
+    const validResponse = {
       status: "ok",
       data: { id: 1, name: "Alice", email: "alice@test.com", role: "user" },
-    });
-    const result = mod.parseUserResponse(json);
-    assert.equal(result.status, "ok");
-    assert.equal(result.data?.name, "Alice");
+    };
+    const result = mod.ApiResponseSchema.safeParse(validResponse);
+    assert.equal(result.success, true, "ApiResponseSchema should accept valid response");
+
+    // Also verify it rejects structurally invalid responses
+    const invalidResponse = { status: 123, data: "not-an-object" };
+    const invalidResult = mod.ApiResponseSchema.safeParse(invalidResponse);
+    assert.equal(invalidResult.success, false, "ApiResponseSchema should reject invalid response");
   });
 
   it("parseUserResponse should throw on invalid data", async () => {
     const mod = await import(join(projectRoot, "src", "index.ts"));
-    const json = JSON.stringify({ status: "ok", data: { id: "not-a-number", name: "Alice" } });
+    const json = JSON.stringify({
+      status: "ok",
+      data: { id: "not-a-number", name: "Alice" },
+    });
     assert.throws(() => mod.parseUserResponse(json));
   });
 
@@ -56,13 +67,18 @@ describe("Zod API Validation", () => {
     }
   });
 
-  it("safeParseUsers should return error for invalid data", async () => {
+  it("safeParseUsers should return field-specific error for invalid data", async () => {
     const mod = await import(join(projectRoot, "src", "index.ts"));
     const data = { id: "invalid", name: 123 };
     const result = mod.safeParseUsers(data);
     assert.equal(result.success, false);
     if (!result.success) {
-      assert.ok(typeof result.error === "string");
+      assert.ok(typeof result.error === "string", "Error must be a string");
+      // Zod error messages contain the field name that failed validation
+      assert.ok(
+        result.error.includes("id") || result.error.includes("name"),
+        "Error should reference the invalid fields (id or name)"
+      );
     }
   });
 });

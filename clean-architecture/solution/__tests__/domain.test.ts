@@ -1,4 +1,4 @@
-import { describe, it, before } from "node:test";
+import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -50,16 +50,6 @@ describe("Domain Layer", () => {
       }),
     };
 
-    const mockSessionRepo: mod.SessionRepository = {
-      findByToken: async () => null,
-      create: async (data) => ({
-        id: "session-1",
-        ...data,
-        createdAt: new Date(),
-      }),
-      deleteByUserId: async () => {},
-    };
-
     const registerUseCase = new mod.RegisterUserUseCase(mockUserRepo);
     const user = await registerUseCase.execute({
       email: "test@test.com",
@@ -97,7 +87,7 @@ describe("Domain Layer", () => {
           password: "pass",
           name: "Test",
         }),
-      { message: "Email already registered" }
+      { message: /already exists|duplicate|registered|already registered/i }
     );
   });
 
@@ -170,7 +160,37 @@ describe("Domain Layer", () => {
           email: "test@test.com",
           password: "wrongpass",
         }),
-      { message: "Invalid credentials" }
+      { message: /invalid|wrong|incorrect|credentials/i }
+    );
+  });
+
+  it("LoginUserUseCase for non-existent user should throw", async () => {
+    const mod = await import(join(projectRoot, "src", "index.ts"));
+
+    const mockUserRepo: mod.UserRepository = {
+      findById: async () => null,
+      findByEmail: async () => null,
+      create: async () => {
+        throw new Error("should not reach");
+      },
+    };
+
+    const mockSessionRepo: mod.SessionRepository = {
+      findByToken: async () => null,
+      create: async () => {
+        throw new Error("should not reach");
+      },
+      deleteByUserId: async () => {},
+    };
+
+    const loginUseCase = new mod.LoginUserUseCase(mockUserRepo, mockSessionRepo);
+    await assert.rejects(
+      () =>
+        loginUseCase.execute({
+          email: "nobody@test.com",
+          password: "anypass",
+        }),
+      { message: /invalid|wrong|incorrect|credentials|not found|exist/i }
     );
   });
 });

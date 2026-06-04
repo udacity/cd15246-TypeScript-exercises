@@ -23,6 +23,8 @@ const projectRoot = join(__dirname, "..");
 // ─────────────────────────────────────────────────────────────
 
 function _compileTimeChecks(): void {
+  // fetchData without overloads accepts undefined via optional param
+  // With overloads, no overload accepts bare undefined
   // @ts-expect-error — overloads reject undefined
   fetchData("/test", undefined);
 
@@ -53,7 +55,10 @@ describe("Function Overloads", () => {
     } catch (e) {
       const stderr = (e as { stderr?: Buffer }).stderr?.toString() || "";
       assert.fail(
-        `Compilation failed.\n${stderr}`
+        `Overload signatures are missing or incorrect.\n\n` +
+        `Expected: overloads that reject undefined / boolean / extra args.\n` +
+        `The implementation currently accepts these via optional params.\n` +
+        `Add explicit overload signatures in src/index.ts to constrain the call patterns.\n\n${stderr}`
       );
     }
   });

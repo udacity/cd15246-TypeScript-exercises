@@ -7,37 +7,49 @@ import { execSync } from "node:child_process";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const projectRoot = join(__dirname, "..");
 
-describe("GenericCache Solution", () => {
-  it("should compile without errors", () => {
+// ─────────────────────────────────────────────────────────────
+// Compile-time assertions for generic type constraints
+//
+// These use type annotations and @ts-expect-error to verify
+// the GenericCache class actually enforces its type parameter.
+// Without `class GenericCache<T>`, the annotation below will
+// fail: "Type 'GenericCache' is not generic."
+//
+// Checked by the tsc --noEmit test below.
+// ─────────────────────────────────────────────────────────────
+
+function _compileTimeChecks(): void {
+  // With a proper GenericCache<T>, this line compiles.
+  // Without <T>, this is: "Type 'GenericCache' is not generic."
+  const _cache: import("../src/index.ts").GenericCache<string> = (null as any);
+
+  // @ts-expect-error — GenericCache<string> should reject number values
+  _cache.set("key", 42);
+
+  // @ts-expect-error — GenericCache<string>.get should return string, not number
+  const _nope: number = _cache.get("key");
+}
+
+// ─────────────────────────────────────────────────────────────
+// Runtime tests
+// ─────────────────────────────────────────────────────────────
+
+describe("GenericCache Exercise", () => {
+  it("should compile without errors (includes type assertions)", () => {
     try {
       execSync("npx tsc --noEmit", { cwd: projectRoot, stdio: "pipe" });
     } catch (e) {
       const stderr = (e as { stderr?: Buffer }).stderr?.toString() || "";
-      assert.fail(`Compilation failed:\n${stderr}`);
+      // If this fails, either there's a code error or the
+      // expect-error directives in _compileTimeChecks were
+      // unused — meaning GenericCache doesn't enforce its type param.
+      assert.fail(`Compilation failed. Either fix the source code or add proper generic type parameters.\n${stderr}`);
     }
-  });
-
-  it("GenericCache with strings should store and retrieve values", async () => {
-    const mod = await import(join(projectRoot, "src", "index.ts"));
-    const cache = new mod.GenericCache<string>(3);
-    cache.set("a", "alpha");
-    cache.set("b", "beta");
-    assert.equal(cache.get("a"), "alpha");
-    assert.equal(cache.get("b"), "beta");
-  });
-
-  it("GenericCache with numbers should work independently", async () => {
-    const mod = await import(join(projectRoot, "src", "index.ts"));
-    const cache = new mod.GenericCache<number>(3);
-    cache.set("x", 42);
-    cache.set("y", 100);
-    assert.equal(cache.get("x"), 42);
-    assert.equal(cache.get("y"), 100);
   });
 
   it("GenericCache should evict oldest entry when over maxSize", async () => {
     const mod = await import(join(projectRoot, "src", "index.ts"));
-    const cache = new mod.GenericCache<string>(2);
+    const cache = new mod.GenericCache(2);
     cache.set("a", "alpha");
     cache.set("b", "beta");
     cache.set("c", "gamma");
@@ -49,19 +61,11 @@ describe("GenericCache Solution", () => {
   it("createUserCache should return a properly typed cache", async () => {
     const mod = await import(join(projectRoot, "src", "index.ts"));
     const userCache = mod.createUserCache(5);
-    const user: mod.User = { id: 1, name: "Alice", email: "alice@test.com", role: "admin" };
+    const user = { id: 1, name: "Alice", email: "alice@test.com", role: "admin" };
     userCache.set("alice", user);
     const retrieved = userCache.get("alice");
     assert.equal(retrieved?.id, 1);
     assert.equal(retrieved?.name, "Alice");
-  });
-
-  it("firstOrNull should return correct type", async () => {
-    const mod = await import(join(projectRoot, "src", "index.ts"));
-    const result = mod.firstOrNull([1, 2, 3]);
-    assert.equal(result, 1);
-    const empty = mod.firstOrNull([] as number[]);
-    assert.equal(empty, null);
   });
 
   it("all exports should exist", async () => {

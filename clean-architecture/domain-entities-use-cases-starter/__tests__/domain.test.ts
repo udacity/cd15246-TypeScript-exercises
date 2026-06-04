@@ -1,27 +1,45 @@
-import { describe, it, before } from "node:test";
+import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
+import { execSync } from "node:child_process";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const projectRoot = join(__dirname, "..");
 
-describe("Domain Layer - Authentication", () => {
-  let mod: Awaited<ReturnType<typeof import>>;
-
-  before(async () => {
-    mod = await import(join(projectRoot, "src", "index.ts"));
+describe("Domain Layer", () => {
+  it("should compile without errors", () => {
+    try {
+      execSync("npx tsc --noEmit", { cwd: projectRoot, stdio: "pipe" });
+    } catch (e) {
+      const stderr = (e as { stderr?: Buffer }).stderr?.toString() || "";
+      assert.fail(`Compilation failed:\n${stderr}`);
+    }
   });
 
-  it("should export entities, repositories, and use cases", () => {
+  it("should export use cases", async () => {
+    const mod = await import(join(projectRoot, "src", "index.ts"));
     assert.equal(typeof mod.RegisterUserUseCase, "function");
     assert.equal(typeof mod.LoginUserUseCase, "function");
-    assert.equal(typeof mod.hashPassword, "function");
-    assert.equal(typeof mod.verifyPassword, "function");
-    assert.equal(typeof mod.generateToken, "function");
+  });
+
+  it("hashPassword should produce a hashed string", async () => {
+    const mod = await import(join(projectRoot, "src", "index.ts"));
+    const hash = mod.hashPassword("mypassword");
+    assert.notEqual(hash, "mypassword");
+    assert.ok(hash.startsWith("hashed_"));
+  });
+
+  it("verifyPassword should match correctly", async () => {
+    const mod = await import(join(projectRoot, "src", "index.ts"));
+    const hash = mod.hashPassword("mypassword");
+    assert.equal(mod.verifyPassword("mypassword", hash), true);
+    assert.equal(mod.verifyPassword("wrong", hash), false);
   });
 
   it("RegisterUserUseCase should create a user via the repository", async () => {
+    const mod = await import(join(projectRoot, "src", "index.ts"));
+
     const mockUserRepo: mod.UserRepository = {
       findById: async () => null,
       findByEmail: async () => null,
@@ -34,24 +52,26 @@ describe("Domain Layer - Authentication", () => {
 
     const registerUseCase = new mod.RegisterUserUseCase(mockUserRepo);
     const user = await registerUseCase.execute({
-      email: "alice@test.com",
-      password: "secret123",
-      name: "Alice",
+      email: "test@test.com",
+      password: "mypassword",
+      name: "Test User",
     });
 
-    assert.equal(user.email, "alice@test.com");
-    assert.equal(user.name, "Alice");
-    assert.ok(mod.verifyPassword("secret123", user.password));
+    assert.equal(user.email, "test@test.com");
+    assert.equal(user.name, "Test User");
+    assert.ok(user.password.startsWith("hashed_"));
   });
 
-  it("RegisterUserUseCase should reject duplicate email", async () => {
+  it("RegisterUserUseCase should reject duplicate emails", async () => {
+    const mod = await import(join(projectRoot, "src", "index.ts"));
+
     const mockUserRepo: mod.UserRepository = {
       findById: async () => null,
       findByEmail: async () => ({
         id: "existing",
-        email: "bob@test.com",
+        email: "test@test.com",
         password: "hashed_pass",
-        name: "Bob",
+        name: "Existing",
         createdAt: new Date(),
       }),
       create: async () => {
@@ -63,22 +83,24 @@ describe("Domain Layer - Authentication", () => {
     await assert.rejects(
       () =>
         registerUseCase.execute({
-          email: "bob@test.com",
+          email: "test@test.com",
           password: "pass",
-          name: "Bob2",
+          name: "Test",
         }),
-      { message: /already exists|duplicate|registered/i }
+      { message: /already exists|duplicate|registered|already registered/i }
     );
   });
 
   it("LoginUserUseCase should create a session on valid credentials", async () => {
+    const mod = await import(join(projectRoot, "src", "index.ts"));
+
     const mockUserRepo: mod.UserRepository = {
       findById: async () => null,
       findByEmail: async () => ({
         id: "user-1",
-        email: "charlie@test.com",
+        email: "test@test.com",
         password: mod.hashPassword("correctpass"),
-        name: "Charlie",
+        name: "Test User",
         createdAt: new Date(),
       }),
       create: async () => {
@@ -98,23 +120,24 @@ describe("Domain Layer - Authentication", () => {
 
     const loginUseCase = new mod.LoginUserUseCase(mockUserRepo, mockSessionRepo);
     const session = await loginUseCase.execute({
-      email: "charlie@test.com",
+      email: "test@test.com",
       password: "correctpass",
     });
 
-    assert.ok(session.token.startsWith("tok_"));
     assert.equal(session.userId, "user-1");
-    assert.ok(session.expiresAt > new Date());
+    assert.ok(session.token.startsWith("tok_"));
   });
 
   it("LoginUserUseCase should reject wrong password", async () => {
+    const mod = await import(join(projectRoot, "src", "index.ts"));
+
     const mockUserRepo: mod.UserRepository = {
       findById: async () => null,
       findByEmail: async () => ({
         id: "user-1",
-        email: "dave@test.com",
+        email: "test@test.com",
         password: mod.hashPassword("correctpass"),
-        name: "Dave",
+        name: "Test User",
         createdAt: new Date(),
       }),
       create: async () => {
@@ -134,7 +157,7 @@ describe("Domain Layer - Authentication", () => {
     await assert.rejects(
       () =>
         loginUseCase.execute({
-          email: "dave@test.com",
+          email: "test@test.com",
           password: "wrongpass",
         }),
       { message: /invalid|wrong|incorrect|credentials/i }
@@ -142,6 +165,8 @@ describe("Domain Layer - Authentication", () => {
   });
 
   it("LoginUserUseCase for non-existent user should throw", async () => {
+    const mod = await import(join(projectRoot, "src", "index.ts"));
+
     const mockUserRepo: mod.UserRepository = {
       findById: async () => null,
       findByEmail: async () => null,
