@@ -2,6 +2,8 @@
   "compilerOptions": {
     // TODO: Set module to "nodenext"
     "module": "",
+    // TODO: Set module resolution to "nodenext" (replaces the deprecated "node")
+    "moduleResolution": "",
     // TODO: Set target to "ES2022"
     "target": "",
     // TODO: Enable strict type checking

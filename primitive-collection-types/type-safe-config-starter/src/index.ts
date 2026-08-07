@@ -1,6 +1,6 @@
 // TODO: Complete this interface with known properties and an index signature
 // The index signature should allow string keys with string | number | boolean values
-interface AppConfig {
+export interface AppConfig {
   appName: string;
   version: string;
   // TODO: Add index signature here

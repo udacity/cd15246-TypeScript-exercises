@@ -7,9 +7,17 @@ Each topic area has a starter folder with the exercise scaffold and a solution f
 
 | Topic | Exercise Starter | Solution |
 |-------|-----------------|----------|
-| Advanced Type Transformations | `custom-pick-omit-starter/` | `solution/` |
-
-Additional exercises are under development. Instructions for future exercises can be found in each module's `exercises/` folder under `modules/`.
+| Project Configuration | `project-configuration/tsconfig-setup-starter/` | `project-configuration/solution/` |
+| Primitive & Collection Types | `primitive-collection-types/type-safe-config-starter/` | `primitive-collection-types/solution/` |
+| Structural Type Design | `structural-type-design/discriminated-user-roles-starter/` | `structural-type-design/solution/` |
+| Type Narrowing & Control Flow | `type-narrowing-control-flow/custom-type-predicates-starter/` | `type-narrowing-control-flow/solution/` |
+| Function Type Safety | `function-type-safety/function-overloads-starter/` | `function-type-safety/solution/` |
+| Generic Programming | `generic-programming/generic-cache-starter/` | `generic-programming/solution/` |
+| Advanced Type Transformations | `advanced-type-transformations/custom-pick-omit-starter/` | `advanced-type-transformations/solution/` |
+| Runtime Type Validation | `runtime-type-validation/zod-api-validation-starter/` | `runtime-type-validation/solution/` |
+| Full-Stack Type Safety | `full-stack-type-safety/prisma-schema-types-starter/` | `full-stack-type-safety/solution/` |
+| Testing Type-Safe Code | `testing-type-safe-code/jest-data-transformation-starter/` | `testing-type-safe-code/solution/` |
+| Clean Architecture | `clean-architecture/domain-entities-use-cases-starter/` | `clean-architecture/solution/` |
 
 ## Prerequisites
 
@@ -48,12 +56,41 @@ npm test
 ```
 exercises/
 ├── README.md                          ← this file
+├── project-configuration/
+│   ├── tsconfig-setup-starter/        ← your work goes here
+│   └── solution/                      ← reference implementation
+├── primitive-collection-types/
+│   ├── type-safe-config-starter/
+│   └── solution/
+├── structural-type-design/
+│   ├── discriminated-user-roles-starter/
+│   └── solution/
+├── type-narrowing-control-flow/
+│   ├── custom-type-predicates-starter/
+│   └── solution/
+├── function-type-safety/
+│   ├── function-overloads-starter/
+│   └── solution/
+├── generic-programming/
+│   ├── generic-cache-starter/
+│   └── solution/
 ├── advanced-type-transformations/
-│   ├── custom-pick-omit-starter/      ← your work goes here
-│   ├── solution/                      ← reference implementation
+│   ├── custom-pick-omit-starter/
+│   ├── solution/
 │   └── demos/
 │       └── deep-partial-form/         ← instructor-led demo
-└── ... (more topics as exercises are built)
+├── runtime-type-validation/
+│   ├── zod-api-validation-starter/
+│   └── solution/
+├── full-stack-type-safety/
+│   ├── prisma-schema-types-starter/
+│   └── solution/
+├── testing-type-safe-code/
+│   ├── jest-data-transformation-starter/
+│   └── solution/
+└── clean-architecture/
+    ├── domain-entities-use-cases-starter/
+    └── solution/
 ```
 
 ## Test Runners

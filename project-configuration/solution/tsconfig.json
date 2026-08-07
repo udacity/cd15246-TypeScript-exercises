@@ -1,10 +1,13 @@
 {
   "compilerOptions": {
     "module": "nodenext",
+    "moduleResolution": "nodenext",
     "target": "ES2022",
     "strict": true,
     "outDir": "./dist",
     "rootDir": "./src",
+    "sourceMap": true,
+    "declaration": true,
     "esModuleInterop": true,
     "types": ["node"],
     "skipLibCheck": true,

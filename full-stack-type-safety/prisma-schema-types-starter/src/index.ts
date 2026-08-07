@@ -30,6 +30,9 @@ export function createUserDelegate(): UserDelegate {
   };
 }
 
+// TODO: Implement createPostDelegate that stores posts and resolves the author
+// from the users created by createUserDelegate (both delegates share the same
+// module-level in-memory store)
 export function createPostDelegate(): PostDelegate {
   return {
     findUnique: async ({ where }) => null,

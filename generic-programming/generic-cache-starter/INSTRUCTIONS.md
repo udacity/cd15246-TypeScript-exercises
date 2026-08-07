@@ -18,7 +18,7 @@ npm test
 ## Requirements
 
 1. Make `GenericCache` generic by adding a type parameter `T`
-2. Type the `constructor` parameter `maxSize` as `number`
+2. Declare a private `maxSize` field (type `number`) and assign the `constructor` parameter to it in the constructor body
 3. Type the `set` method parameters: `key: string, value: T`
 4. Type the `get` method return type as `T | undefined`
 5. Implement eviction: when the store is at `maxSize`, delete the oldest entry before adding a new one

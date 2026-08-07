@@ -1,6 +1,6 @@
 # Domain Entities and Use Cases
 
-Build the domain layer of an authentication system using clean architecture. You'll create entities (User, Session) and use cases (RegisterUser, LoginUser, LogoutUser). The domain layer should have NO external dependencies — pure TypeScript business logic.
+Build the domain layer of an authentication system using clean architecture. You'll create entities (User, Session) and use cases (RegisterUser, LoginUser). The domain layer should have NO external dependencies — pure TypeScript business logic.
 
 ## Setup
 
@@ -36,6 +36,6 @@ Located in the `solution/` folder. Use it to check your work after you have atte
 
 1. The domain layer should have no imports from external libraries — pure TypeScript only
 2. Use interfaces for the repository pattern so domain code doesn't depend on infrastructure
-3. Password hashing can be simulated with a simple prefix + reverse (not real crypto)
+3. The starter already includes `hashPassword` and `verifyPassword` helpers — use them in `RegisterUserUseCase` and `LoginUserUseCase` instead of reimplementing hashing
 4. A use case orchestrates entities and repositories — it doesn't contain business logic in the entity methods
 5. Run `npm test` after each change to verify your implementation

@@ -2,7 +2,7 @@
 export class GenericCache {
   private store = new Map<string, any>();
 
-  // TODO: Set the type of maxSize parameter
+  // TODO: Declare a private maxSize field and assign the constructor parameter to it
   constructor(maxSize: number) {
     this.maxSize = maxSize;
   }

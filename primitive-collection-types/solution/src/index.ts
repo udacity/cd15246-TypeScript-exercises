@@ -1,5 +1,5 @@
 // AppConfig with known properties and an index signature for dynamic keys
-interface AppConfig {
+export interface AppConfig {
   appName: string;
   version: string;
   // Index signature: allows dynamic string keys with primitive values

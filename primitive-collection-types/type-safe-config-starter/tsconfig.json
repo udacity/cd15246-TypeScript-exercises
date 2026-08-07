@@ -4,10 +4,16 @@
     "module": "nodenext",
     "moduleResolution": "nodenext",
     "strict": true,
+    "esModuleInterop": true,
+    "outDir": "./dist",
+    "sourceMap": true,
+    "declaration": true,
     "noPropertyAccessFromIndexSignature": true,
     "types": ["node"],
     "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "allowImportingTsExtensions": true,
+    "noEmit": true
   },
-  "include": ["src"]
+  "include": ["src", "__tests__"]
 }

@@ -30,8 +30,10 @@ Your task is to write tests in `__tests__/transformation.test.ts` that cover:
 
 1. **Happy path** — test each function with valid input
 2. **Edge cases** — empty arrays, missing optional fields, boundary values for ages
-3. **Error handling** — invalid input types, null/undefined values, missing required fields
+3. **Filtering and null handling** — `transformMany` skips entries with missing `id`, `first_name`, or `last_name`; `calculateAgeStats` returns `null` when no ages are present
 4. **Type safety** — verify that the functions return the correct shape
+
+Note: the functions are strictly typed, so test invalid data with valid-typed but incomplete input (e.g., empty `first_name` strings), not `null` or malformed literals. Those would be compile errors, since ts-jest type-checks your tests.
 
 ## Starter Code
 
@@ -40,9 +42,9 @@ Your task is to write tests in `__tests__/transformation.test.ts` that cover:
 
 ## Requirements
 
-- Write at least 8 test cases distributed across all three functions
+- Write at least 8 test cases distributed across all three functions (the test file already has 8 named stubs ready to fill in)
 - Use `describe` blocks to group related tests
-- Test both valid and invalid inputs
+- Test both valid and invalid inputs (within the type system — see the note above)
 - Run `npm test` to verify your tests pass
 
 ## Solution

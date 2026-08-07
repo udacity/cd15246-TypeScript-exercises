@@ -1,11 +1,32 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
+import { join, dirname } from "node:path";
+import { fileURLToPath } from "node:url";
+import { execSync } from "node:child_process";
 import {
   isStringArray,
   isUserObject,
   isValidEmail,
   processData,
 } from "../src/index.ts";
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const projectRoot = join(__dirname, "..");
+
+describe("compile-time checks", () => {
+  it("should compile with type predicate signatures", () => {
+    // Enforces `val is Type` predicates. Without them, processData cannot
+    // access data.name or data.length, so the file fails to compile.
+    try {
+      execSync("npx tsc --noEmit", { cwd: projectRoot, stdio: "pipe" });
+    } catch (e) {
+      const stderr = (e as { stderr?: Buffer }).stderr?.toString() || "";
+      assert.fail(
+        `TypeScript compilation failed. Use type predicate signatures (val is Type) in isStringArray and isUserObject.\n${stderr}`
+      );
+    }
+  });
+});
 
 describe("isStringArray", () => {
   it("should distinguish string arrays from other values", () => {

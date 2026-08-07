@@ -43,5 +43,5 @@ Located in the `solution/` folder. Use it to check your work after you have atte
 1. Overload signatures go BEFORE the implementation signature — TypeScript matches calls against them in order
 2. The implementation signature must be compatible with ALL overloads
 3. Use `typeof` checks in the implementation body to distinguish between overload cases
-4. For the `AbortSignal` overload, convert the signal to a timeout using `AbortSignal.timeout()`
+4. For the `AbortSignal` overload, wire the signal up directly: listen for its `"abort"` event with `param.addEventListener("abort", ...)` and reject the promise when it fires. (`AbortSignal.timeout(ms)` creates a brand-new signal from a number — it cannot convert an existing one.)
 5. Run `npm test` after each change to verify your overloads

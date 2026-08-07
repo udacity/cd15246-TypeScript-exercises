@@ -23,6 +23,11 @@ describe("TypeScript Configuration", () => {
     const opts = config.compilerOptions;
 
     assert.equal(opts.module, "nodenext", 'module must be "nodenext"');
+    assert.equal(
+      opts.moduleResolution,
+      "nodenext",
+      'moduleResolution must be "nodenext"'
+    );
     assert.equal(opts.target, "ES2022", 'target must be "ES2022"');
     assert.equal(opts.strict, true, "strict must be true");
     assert.equal(opts.outDir, "./dist", 'outDir must be "./dist"');
