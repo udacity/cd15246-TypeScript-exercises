@@ -33,7 +33,7 @@ export interface SessionRepository {
 // ===== Use Cases =====
 
 // TODO: Implement RegisterUserUseCase
-// Should hash password, create user, return the user (without password)
+// Should hash the password, create the user, and return the user with the hashed password
 export class RegisterUserUseCase {
   private userRepository: UserRepository;
 
